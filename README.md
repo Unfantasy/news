@@ -1,2 +1,2 @@
-# news
-今日精选
+# antd-mobile
+react + antd-mobie + webpack 脚手架

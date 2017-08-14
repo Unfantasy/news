@@ -1,53 +1,85 @@
-var webpack = require('webpack');
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+/* eslint-disable */
+const path = require('path')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const pxtorem = require('postcss-pxtorem');
+
+const Visualizer = require('webpack-visualizer-plugin'); // remove it in production environment.
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // remove it in production environment.
+const otherPlugins = process.argv[1].indexOf('webpack-dev-server') >= 0 ? [] : [
+  new Visualizer(), // remove it in production environment.
+  new BundleAnalyzerPlugin({
+    defaultSizes: 'parsed',
+    // generateStatsFile: true,
+    statsOptions: { source: false }
+  }), // remove it in production environment.
+];
 
 module.exports = {
+  devtool: 'source-map', // or 'inline-source-map'
+  devServer: {
+    disableHostCheck: true
+  },
 
-    // 配置服务器
-    devServer: {
-        historyApiFallback: true,
-        hot: true,
-        inline: true,
-        progress: true,
-        contentBase: "./app",
-        port: 8080
-        // 开发过程中可设置代理
-        // proxy: {
-        //    '/api/**': {
-        //      target: 'http://test.com',
-        //      secure: false,
-        //      changeOrigin: true
-        //    }
-        // }
-    },
-    devtool:"cheap-module-eval-source-map",  //在控制台的sources下，点开可以看到webpack://目录，里面可以直接看到我们开发态的源代码，这样方便我们直接在浏览器中打断点调试
-    entry: {
-        pages: __dirname +'/app/src/router.jsx',
-        vendors:['react','react-dom','react-router']  //抽取公共框架
-    },
-    output: {
-        publicPath: 'dist',
-        filename: 'js/bundle.js'
-    },
-    module: {
-        rules: [
-            { test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader',use: 'css-loader'}) }, //坑：不能用叹号链接，必须写成这种格式
-            { test: /\.less$/, loader: ExtractTextPlugin.extract({use: 'css-loader!less-loader'}) },
-            { test: /\.js[x]?$/, exclude: /node_modules/, loader: 'babel-loader' },
-            { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192&name=/img/[name].[ext]' },
-            { test: /\.(woff|woff2|eot|ttf|svg)(\?.*$|$)/, loader: 'url-loader' }
-        ]
-    },
-    resolve: {
-        extensions: ['.js', '.jsx']
-    },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin({name: 'vendors', filename: 'js/vendors.js'}),
-        new ExtractTextPlugin("css/bundle.css"),
-        new webpack.ProvidePlugin({ $: "jquery" }),
-        new webpack.HotModuleReplacementPlugin(),
-        new OpenBrowserPlugin({ url: 'http://localhost:8080/' })
+  entry: { "index": path.resolve(__dirname, 'src/entries/index') },
+
+  output: {
+    filename: '[name].js',
+    chunkFilename: '[id].chunk.js',
+    path: path.join(__dirname, '/dist'),
+    publicPath: '/dist/'
+  },
+
+  resolve: {
+    modulesDirectories: ['node_modules', path.join(__dirname, '../node_modules')],
+    extensions: ['', '.web.js', '.jsx', '.js', '.json'],
+  },
+
+  module: {
+    noParse: [/moment.js/],
+    loaders: [
+      {
+        test: /\.jsx$/, exclude: /node_modules/, loader: 'babel',
+        query: {
+          plugins: [
+            'external-helpers', // why not work?
+            ["transform-runtime", { polyfill: false }],
+            ["import", [{ "style": "css", "libraryName": "antd-mobile" }]]
+          ],
+          presets: ['es2015', 'stage-0', 'react']
+        }
+      },
+      { test: /\.(jpg|png)$/, loader: "url?limit=8192" },
+      // svg-sprite for antd-mobile@1.0
+      { test: /\.(svg)$/i, loader: 'svg-sprite', include: [
+        require.resolve('antd-mobile').replace(/warn\.js$/, ''),  // 1. 属于 antd-mobile 内置 svg 文件
+        // path.resolve(__dirname, 'src/my-project-svg-foler'),  // 自己私人的 svg 存放目录
+      ]},
+      // { test: /\.css$/, loader: 'style!css' }, // 把css处理成内联style，动态插入到页面
+      { test: /\.less$/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
+      { test: /\.scss/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
+      { test: /\.css$/i, loader: ExtractTextPlugin.extract('style', 'css!postcss') }
     ]
-};
+  },
+  postcss: [
+    autoprefixer({
+      browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
+    }),
+    pxtorem({ rootValue: 100, propWhiteList: [] })
+  ],
+  externals: {
+    "react": "React",
+    "react-dom": "ReactDOM"
+  },
+  plugins: [
+    // new webpack.optimize.CommonsChunkPlugin('shared.js'),
+    new webpack.optimize.CommonsChunkPlugin({
+      // minChunks: 2,
+      name: 'shared',
+      filename: 'shared.js'
+    }),
+    new ExtractTextPlugin('[name].css', { allChunks: true }),
+    ...otherPlugins
+  ]
+}

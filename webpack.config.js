@@ -22,7 +22,7 @@ module.exports = {
     disableHostCheck: true
   },
 
-  entry: { "index": path.resolve(__dirname, 'src/entries/index') },
+  entry: { fetch: 'whatwg-fetch', "index": path.resolve(__dirname, 'src/entries/index') },
 
   output: {
     filename: '[name].js',
@@ -38,6 +38,14 @@ module.exports = {
 
   module: {
     noParse: [/moment.js/],
+    preLoaders: [
+      {
+        test: /\.js$/,
+        loader: 'eslint',
+        include: path.join(__dirname, ''),
+        exclude: /node_modules/,
+      }
+    ],
     loaders: [
       {
         test: /\.js$/,

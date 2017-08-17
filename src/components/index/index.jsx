@@ -4,7 +4,8 @@
 
 import React, { Component } from 'react';
 import { Tabs } from 'antd-mobile';
-import 'whatwg-fetch';
+// import 'whatwg-fetch';
+import { fetch } from '../utils';
 import { NEWS_API } from '../../constants';
 import './style.scss';
 
@@ -17,7 +18,7 @@ export default class extends Component {
   }
   componentDidMount() {
     console.log(NEWS_API);
-    fetch(NEWS_API.list).then((data) => {
+    fetch.post(NEWS_API.list, { data: { aaa: '11' } }).then((data) => {
       console.log('data:', data);
     });
   }

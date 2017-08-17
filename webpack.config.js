@@ -40,6 +40,12 @@ module.exports = {
     noParse: [/moment.js/],
     loaders: [
       {
+        test: /\.js$/,
+        loader: 'babel',
+        include: path.join(__dirname, ''),
+        exclude: /node_modules/,
+      },
+      {
         test: /\.jsx$/, exclude: /node_modules/, loader: 'babel',
         query: {
           plugins: [
@@ -57,8 +63,8 @@ module.exports = {
         // path.resolve(__dirname, 'src/my-project-svg-foler'),  // 自己私人的 svg 存放目录
       ]},
       // { test: /\.css$/, loader: 'style!css' }, // 把css处理成内联style，动态插入到页面
-      { test: /\.less$/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
-      { test: /\.scss/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
+      // { test: /\.less$/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!less') },
+      { test: /\.scss|sass/i, loader: ExtractTextPlugin.extract('style', 'css!postcss!sass') },
       { test: /\.css$/i, loader: ExtractTextPlugin.extract('style', 'css!postcss') }
     ]
   },
@@ -71,6 +77,9 @@ module.exports = {
   externals: {
     "react": "React",
     "react-dom": "ReactDOM"
+  },
+  sassLoader: {
+    includePaths: [path.join(__dirname, 'scss')]
   },
   plugins: [
     // new webpack.optimize.CommonsChunkPlugin('shared.js'),

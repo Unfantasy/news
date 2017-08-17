@@ -3,9 +3,10 @@
  */
 
 // const domain = 'http://mimikj.com:6060';
-//
-// const NEWS_API = {
-//   list: domain + '/mimikj/trigger/infor_flow_td/list',
-// };
+const domain = 'http://test.mimikj.com:6060'; // 测试
 
-export default { a: 1 };
+const NEWS_API = {
+  list: domain + '/mimikj/trigger/infor_flow_td/list',
+};
+
+export { NEWS_API, domain };

@@ -1,0 +1,36 @@
+.index-title {
+  width: 100%;
+  overflow-x: scroll;
+  font-size: 34px;
+  position: fixed;
+  top: 0;
+
+  .index-title-box {
+    width: 9999px;
+    height: 79px;
+
+    .index-title-item {
+      display: inline-block;
+      color: #222328;
+      padding: 20px;
+      opacity: .4;
+
+      &.index-title-item-active {
+        opacity: 1;
+      }
+    }
+  }
+
+  .index-title-extra {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 79px;;
+    width: 200px;
+    background: linear-gradient(to left, #fff, rgba(0, 0, 0, 0));
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}

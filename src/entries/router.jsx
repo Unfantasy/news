@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, hashHistory } from 'react-router';
+import { Router, Route, browserHistory } from 'react-router';
 
 import Index from '../components/index';
 // import App from '../components/App';
@@ -8,8 +8,8 @@ import Index from '../components/index';
 // import Stage3 from '../components/Stage3';
 
 export default (
-  <Router history={hashHistory}>
-    <Route path="/" component={Index}>
+  <Router history={browserHistory}>
+    <Route path="/web" component={Index}>
       {/* <IndexRoute component={Index} /> */}
       {/* <Route path="s1" component={Stage1} />
       <Route path="s2" component={Stage2} />

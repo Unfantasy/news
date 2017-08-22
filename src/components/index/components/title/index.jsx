@@ -33,7 +33,7 @@ export default class extends Component {
     return (
       <div className="index-title">
         <div className="index-title-box" id="J_box_length">
-          <div className="index-title-item index-title-item-active">美丽生态</div>
+          <div className="index-title-item index-title-item-active">今日</div>
           <div className="index-title-item" onClick={this.showThis.bind(this, '2')}>美丽</div>
           <div className="index-title-item">美丽生态</div>
           <div className="index-title-item">美丽</div>

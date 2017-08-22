@@ -1,51 +1,214 @@
-.inline-block-2 {
-  font-size: 0;
-  width: 100%;
+.index-content {
+  .inline-block-2 {
+    font-size: 0;
+    width: 100%;
 
-  & > div {
-    display: inline-block;
-    font-size: 30px;
-    width: 49%;
-  }
-}
-
-.price-limit {
-  margin-top: 79px;
-  color: #E73607;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  line-height: 1;
-
-  & > div {
-    text-align: center;
+    & > div {
+      display: inline-block;
+      font-size: 30px;
+      width: 49%;
+    }
   }
 
-  span {
-    vertical-align: middle;
+  .price-limit {
+    margin-top: 79px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: #E73607;
+    background-color: #f7f7f7;
+    line-height: 1;
+
+    & > div {
+      text-align: center;
+    }
+
+    span {
+      vertical-align: middle;
+    }
+
+    .price {
+      font-size: 30px;
+      padding-right: 12px;
+    }
+
+    .rate {
+      font-size: 20px;
+      padding-right: 14px;
+    }
+
+    .mark {
+      font-size: 22px;
+      line-height: 1.5;
+      padding-left: 5px;
+      padding-right: 5px;
+      color: #0786E7;
+      border-radius: 50%;
+      border: 1px solid #0786E7;
+    }
+
+    .down {
+      color: #00C40C;
+    }
   }
 
-  .price {
-    font-size: 30px;
-    padding-right: 12px;
+  .news-first {
+    position: relative;
+    padding: 32px 30px 40px;
+    margin-bottom: 12px;
+    background-color: #fff;
+
+    span {
+      vertical-align: middle;
+    }
+    .title {
+      position: relative;
+      z-index: 2;
+      height: 34px;
+      font-size: 24px;
+      line-height: 34px;
+      color: #a0a0a0;
+
+      .title-name {
+        display: inline-block;
+        width: 96px;
+        height: 34px;
+        margin-right: 10px;
+        font-size: 20px;
+        line-height: 34px;
+        color: #fff;
+        background: linear-gradient(to right, #21BFFF 0%, #3057F0 100%);
+        border-radius: 5px;
+        text-align: center;
+      }
+    }
+
+    .news-first-line {
+      display: inline-block;
+      position: absolute;
+      top: 34px;
+      left: 76px;
+      width: 2px;
+      height: 24px;
+      background-color: #f9f9f9;
+    }
+
+    .content {
+      margin-top: 24px;
+      padding: 30px;
+      font-size: 32px;
+      color: #222;
+      background-color: #f9f9f9;
+    }
   }
 
-  .rate {
-    font-size: 20px;
-    padding-right: 14px;
+  .index-content-news-list {
+    position: relative;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #fff;
   }
 
-  .mark {
-    font-size: 22px;
-    line-height: 1.5;
-    padding-left: 5px;
-    padding-right: 5px;
-    color: #0786E7;
-    border-radius: 50%;
-    border: 1px solid #0786E7;
+  .news-type {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border-top: 1px solid #ddd;
+
+    &.news-type-pic-1 {
+      display: flex;
+
+      .pic-1-1 {
+        flex: 1;
+
+        h2 {
+          margin: 0;
+          font-size: 36px;
+          color: #222;
+          font-weight: normal;
+        }
+
+        p {
+          margin-top: 8px;
+          margin-bottom: 0;
+          font-size: 24px;
+          color: #a0a0a0;
+        }
+      }
+
+      .pic-1-2 {
+        img {
+          width: 252px;
+          margin-left: 20px;
+        }
+      }
+    }
+
+    &.news-type-pic-3 {
+      h2 {
+        margin: 0 0 10px 0;
+        font-size: 38px;
+        color: #222;
+        font-weight: normal;
+      }
+
+      p {
+        margin: 0;
+        font-size: 24px;
+        color: #a0a0a0;
+      }
+
+      img {
+        width: 226px;
+        text-align: center;
+      }
+    }
+
+    &.news-type-pic-0 {
+      h2 {
+        margin: 0 0 10px 0;
+        font-size: 38px;
+        color: #222;
+        font-weight: normal;
+      }
+
+      p {
+        margin: 0;
+        font-size: 24px;
+        color: #a0a0a0;
+      }
+    }
   }
 
-  .down {
-    color: #00C40C;
-  }
+  .news-type-memo {
+    .title {
+      padding: 30px;
+      font-size: 38px;
+      color: #222;
+      background-color: #fff;
+    }
 
+    .content {
+      .stock {
+        padding: 0 15px;
+        background-color: #f9f9f9;
+
+        .stock-name {
+          padding-top: 20px;
+          font-size:30px;
+          color: #0786E7;
+        }
+
+        .stock-description {
+          padding: 0 15px;
+          font-size: 30px;
+          color: #222;
+        }
+      }
+    }
+
+    .footer {
+      margin-top: 8px;
+      font-size: 24px;
+      color: #a0a0a0;
+    }
+  }
 }

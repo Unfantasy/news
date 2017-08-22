@@ -17,24 +17,28 @@ const alert = Modal.alert;
 export default class extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      dataAray: [],
+    };
   }
   componentDidMount() {
     console.log(NEWS_API);
     fetch.get(NEWS_API.list, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061' } }).then((data) => {
       if (data.success === true) {
         // 成功
-        console.log('data:', data);
+        this.setState({ dataArray: data.result });
       } else {
         alert('提示', '网络走神了');
       }
     });
   }
   render() {
+    const { dataArray } = this.state;
+    console.log('dataArray: ', dataArray);
     return (
       <div className="index">
         <Title />
-        <Content />
+        <Content dataArray={dataArray} />
         {/* <Tabs animated={false} swipeable={false}>
           <TabPane tab="First tab" key="1">123123</TabPane>
           <TabPane tab="1" key="2">123123</TabPane>

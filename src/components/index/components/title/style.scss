@@ -1,9 +1,11 @@
 .index-title {
-  width: 100%;
-  overflow-x: scroll;
-  font-size: 34px;
   position: fixed;
   top: 0;
+  z-index: 3;
+  width: 100%;
+  font-size: 34px;
+  background-color: #fff;
+  overflow-x: scroll;
 
   .index-title-box {
     width: 9999px;

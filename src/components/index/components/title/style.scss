@@ -3,19 +3,21 @@
   top: 0;
   z-index: 3;
   width: 100%;
+  height: 79px;
   font-size: 34px;
   background-color: #fff;
   overflow-x: scroll;
 
   .index-title-box {
     width: 9999px;
-    height: 79px;
 
     .index-title-item {
-      display: inline-block;
+      float: left;
       color: #222328;
-      padding: 20px;
-      opacity: .4;
+      padding: 0 20px;
+      height: 79px;
+      line-height: 79px;
+      opacity: 0.4;
 
       &.index-title-item-active {
         opacity: 1;
@@ -27,7 +29,7 @@
     position: fixed;
     right: 0;
     top: 0;
-    height: 79px;;
+    height: 79px;
     width: 200px;
     background: linear-gradient(to left, #fff, rgba(0, 0, 0, 0));
   }

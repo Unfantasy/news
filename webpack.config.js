@@ -19,7 +19,8 @@ const otherPlugins = process.argv[1].indexOf('webpack-dev-server') >= 0 ? [] : [
 module.exports = {
   devtool: 'source-map', // or 'inline-source-map'
   devServer: {
-    disableHostCheck: true
+    disableHostCheck: true,
+    historyApiFallback: true
   },
 
   entry: { fetch: 'whatwg-fetch', "index": path.resolve(__dirname, 'src/entries/index') },

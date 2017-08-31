@@ -9,7 +9,7 @@ import Index from '../components/index';
 
 export default (
   <Router history={browserHistory}>
-    <Route path="/web" component={Index}>
+    <Route path="/web/index" component={Index}>
       {/* <IndexRoute component={Index} /> */}
       {/* <Route path="s1" component={Stage1} />
       <Route path="s2" component={Stage2} />

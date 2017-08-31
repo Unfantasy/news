@@ -4,8 +4,6 @@
 
 import React, { Component } from 'react';
 import { Flex } from 'antd-mobile';
-import InfiniteScroller from 'react-infinite-scroller';
-// import 'whatwg-fetch';
 import { dateFormatter } from '../../../utils';
 import './style.scss';
 
@@ -22,23 +20,22 @@ export default class extends Component {
   //     console.log('data:', data);
   //   });
   // }
-  componentWillReceiveProps(props) {
-    const { dataArray = [] } = props;
-    console.log('props', props);
-    this.setState({ dataArray });
-  }
-  loadMore() {
-
-  }
+  // componentWillReceiveProps(props) {
+  //   const { dataArray = [] } = props;
+  //   // console.log('props', props);
+  //   this.setState({ dataArray });
+  // }
   render() {
-    const { dataArray = [] } = this.state;
+    const { dataArray = [], stockPrice = {} } = this.props;
+    console.log('propsstockPrice: ', stockPrice);
     const newsList = dataArray.map((data, index) => {
       if (index === 0) {
-        return;
+        return null;
       }
       if (data.type.indexOf('news_') !== -1) {
         try {
-          const picArr = typeof data.pic_url === 'string' ? JSON.parse(data.pic_url) : data.pic_url;
+          const picArr = data.pic_url ? (typeof data.pic_url === 'string' ? JSON.parse(data.pic_url) : data.pic_url) : [];
+          // console.log('picArr: ', picArr);
           if (picArr.length === 1) {
             return (
               <div className="news-type news-type-pic-1">
@@ -47,7 +44,7 @@ export default class extends Component {
                   <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
                 </div>
                 <div className="pic-1-2">
-                  <img src={picArr[0]} />
+                  <img src={picArr[0]} alt="img" />
                 </div>
               </div>
             );
@@ -56,9 +53,9 @@ export default class extends Component {
               <div className="news-type news-type-pic-3">
                 <h2>{data.description}</h2>
                 <Flex>
-                  <Item><img src={picArr[0]} /></Item>
-                  <Item><img src={picArr[1]} /></Item>
-                  <Item><img src={picArr[2]} /></Item>
+                  <Item><img src={picArr[0]} alt="img" /></Item>
+                  <Item><img src={picArr[1]} alt="img" /></Item>
+                  <Item><img src={picArr[2]} alt="img" /></Item>
                 </Flex>
                 <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
               </div>
@@ -71,16 +68,16 @@ export default class extends Component {
               </div>
             );
           }
-        } catch(e) { console.log(e) }
+        } catch (e) { console.log(e); }
       } else if (data.type === 'memo') {
         const description = typeof data.description === 'string' ? JSON.parse(data.description) : data.description;
-        const contentItem = description.map((d) => {
-          <div classNme="stock">
+        const contentItem = description.map(d =>
+          <div className="stock">
             <div className="stock-name">{d.stock_name}&nbsp;&nbsp;{d.symbol}</div>
             <div className="stock-description">{d.desc}</div>
           </div>
-        });
-        return(
+        );
+        return (
           <div className="news-type-memo">
             <div className="title">{data.name}</div>
             <div className="content">{contentItem}</div>
@@ -88,8 +85,9 @@ export default class extends Component {
           </div>
         );
       }
+      return null;
     });
-    let newsFirst = null
+    let newsFirst = null;
     if (dataArray[0]) {
       newsFirst = (
         <div className="news-first">
@@ -97,7 +95,7 @@ export default class extends Component {
             <span className="title-name">{dataArray[0].name}</span>
             <span>刚刚</span>
           </div>
-          <span className="news-first-line"></span>
+          <span className="news-first-line" />
           <div className="content">{dataArray[0].description}</div>
         </div>
       );
@@ -106,27 +104,22 @@ export default class extends Component {
       <div className="index-content">
         <div className="price-limit inline-block-2">
           <div>
-            <span className="price">8.86</span>
-            <span className="rate">+0.83 (+2.66%)</span>
+            <span className="price">{stockPrice.stockinfo ? stockPrice.stockinfo.price : '0.00'}</span>
+            <span className="rate">{stockPrice.stockinfo ? stockPrice.stockinfo.change : '0.00'} ({stockPrice.stockinfo ? stockPrice.stockinfo.change_percent : '0.00'}%)</span>
             <span className="mark">证</span>
           </div>
           <div className="down">
-            <span className="price">8.86</span>
-            <span className="rate">+0.83 (+2.66%)</span>
-            <span className="mark">证</span>
+            <span className="price">{stockPrice.indexinfo ? stockPrice.indexinfo.price : '0.00'}</span>
+            <span className="rate">{stockPrice.indexinfo ? stockPrice.indexinfo.change : '0.00'} ({stockPrice.indexinfo ? stockPrice.indexinfo.change_percent : '0.00'})</span>
+            <span className="mark">深</span>
           </div>
         </div>
-        <InfiniteScroller
-          loadMore={this.loadMore.bind(this)}
-          loader={<div className="loader">Loading ...</div>}
-        >
-          <div>
-            {newsFirst}
-            <div className="index-content-news-list">
-              {newsList}
-            </div>
+        <div>
+          {newsFirst}
+          <div className="index-content-news-list">
+            {newsList}
           </div>
-        </InfiniteScroller>
+        </div>
       </div>
     );
   }

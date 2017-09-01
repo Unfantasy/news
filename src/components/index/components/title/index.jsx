@@ -26,20 +26,15 @@ export default class extends Component {
     // document.getElementById('J_box_length').style.width = (width / 100) + 'rem';
   }
   render() {
-    const { itemActive, switchStock } = this.props;
-    console.log('itemActive: ', itemActive);
-    const arr = ['', '', '', '', '', '', '', '', ''];
-    const indexTitleItemNodes = arr.map((v, i) => {
+    const { itemActive, stockList = [], switchStock } = this.props;
+    // console.log('itemActive: ', itemActive);
+    // const arr = ['', '', '', '', '', '', '', '', ''];
+    const indexTitleItemNodes = stockList.map((stock) => {
       let classNameName = 'index-title-item';
-      if (itemActive === i) {
+      if (itemActive === stock.symbol) {
         classNameName = 'index-title-item index-title-item-active';
       }
-      if (i === 0) {
-        return <div className={classNameName} onClick={() => { switchStock(i); }}>今日</div>;
-      } else if (i % 2 === 0) {
-        return <div className={classNameName} onClick={() => { switchStock(i); }}>美丽</div>;
-      }
-      return <div className={classNameName} onClick={() => { switchStock(i); }}>美丽生态</div>;
+      return <div className={classNameName} onClick={() => { switchStock(stock.symbol); }}>{stock.stock_name}</div>;
     });
     return (
       <div className="index-title">

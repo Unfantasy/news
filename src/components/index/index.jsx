@@ -23,24 +23,27 @@ export default class extends Component {
       hasMore: false,
       isFinish: false,
       showInfiniteScroll: true,
+      symbol: '1',
       dataAray: [],
     };
     this.dataNumber = null;
-    this.itemActive = 0;
+    this.itemActive = '1';
     this.fetchCount = 0;
-    this.maxFetchCount = 2;
+    this.maxFetchCount = 3;
   }
   componentDidMount() {
-    this.initData();
+    this.initData('1');
   }
-  initData() {
+
+  // 初始化数据
+  initData(symbol) {
     const checkComplete = () => {
-      console.log('this.fetchCount: ', this.fetchCount, 'this.maxFetchCount: ', this.maxFetchCount);
+      // console.log('this.fetchCount: ', this.fetchCount, 'this.maxFetchCount: ', this.maxFetchCount);
       if (this.fetchCount === this.maxFetchCount) {
-        this.setState({ dataArray: this.dataArray, stockPrice: this.stockPrice, loading: false, hasMore: true });
+        this.setState({ dataArray: this.dataArray, stockPrice: this.stockPrice, stockList: this.stockList, symbol, loading: false, hasMore: true });
       }
     };
-    fetch.get(NEWS_API.list, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061' } }).then((data) => {
+    fetch.get(NEWS_API.getList(symbol), { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061' } }).then((data) => {
       this.fetchCount += 1;
       if (data.success === true) {
         // 成功
@@ -56,7 +59,7 @@ export default class extends Component {
       }
       checkComplete();
     });
-    fetch.get(NEWS_API.getLatestPrice, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', symbol: '1' } }).then((data) => {
+    fetch.get(NEWS_API.getLatestPrice, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', symbol } }).then((data) => {
       this.fetchCount += 1;
       if (data.success) {
         // 成功
@@ -67,21 +70,60 @@ export default class extends Component {
       }
       checkComplete();
     });
-    // fetch.get(NEWS_API.getStockList, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', symbol: '1' } }).then((data) => {
-    //   this.fetchCount += 1;
-    //   if (data.success) {
-    //     // 成功
-    //     console.log('data: ', data);
-    //   } else {
-    //     alert('提示', '网络走神了');
-    //   }
-    //   checkComplete();
-    // });
+    fetch.get(NEWS_API.getStockList, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061' } }).then((data) => {
+      this.fetchCount += 1;
+      if (data.success) {
+        // 成功
+        this.stockList = data.result;
+        this.stockList.unshift({ stock_name: '今日', symbol: '1' });
+        console.log('this.stockList: ', this.stockList);
+      } else {
+        alert('提示', '网络走神了');
+      }
+      checkComplete();
+    });
   }
-  loadMore() {
+
+  // 切换title之后加载数据
+  loadData(symbol) {
+    const checkComplete = () => {
+      // console.log('this.fetchCount: ', this.fetchCount, 'this.maxFetchCount: ', this.maxFetchCount);
+      if (this.fetchCount === this.maxFetchCount) {
+        this.setState({ dataArray: this.dataArray, stockPrice: this.stockPrice, symbol, loading: false, hasMore: true });
+      }
+    };
+    fetch.get(NEWS_API.getList(symbol), { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061' } }).then((data) => {
+      this.fetchCount += 1;
+      if (data.success === true) {
+        // 成功
+        // console.log('data: ', data);
+        const { result } = data;
+        if (result && typeof result === 'object' && result.length > 0) {
+          this.pageNumber = result[result.length - 1].sort_num;
+        }
+        this.dataArray = data.result;
+        // console.log('dataArray: ', this.state.dataArray);
+      } else {
+        alert('提示', '网络走神了');
+      }
+      checkComplete();
+    });
+    fetch.get(NEWS_API.getLatestPrice, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', symbol } }).then((data) => {
+      this.fetchCount += 1;
+      if (data.success) {
+        // 成功
+        // console.log('data: ', data);
+        this.stockPrice = data.result;
+      } else {
+        alert('提示', '网络走神了');
+      }
+      checkComplete();
+    });
+  }
+  loadMore(symbol) {
     if (!this.loadingMoreLock) {
       this.loadingMoreLock = true;
-      fetch.get(NEWS_API.list, { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', sort_num: this.pageNumber } }).then((data) => {
+      fetch.get(NEWS_API.getList(symbol), { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', sort_num: this.pageNumber } }).then((data) => {
         if (data.success === true) {
           // 成功
           const { result } = data;
@@ -105,24 +147,30 @@ export default class extends Component {
     }
   }
   switchStock(param) {
-    console.log('param: ', param);
+    // console.log('param: ', param);
     this.dataNumber = null;
     this.itemActive = param;
     this.fetchCount = 0;
-    this.initData();
+    this.maxFetchCount = 2;
+    this.setState({
+      hasMore: false,
+      isFinish: false,
+      showInfiniteScroll: true,
+    });
+    this.loadData(param);
   }
   render() {
-    const { dataArray, stockPrice, hasMore, loading, showInfiniteScroll, isFinish } = this.state;
-    console.log('itemActive: ', this.itemActive);
+    const { dataArray, stockPrice, stockList, hasMore, symbol, loading, showInfiniteScroll, isFinish } = this.state;
+    // console.log('itemActive: ', this.itemActive);
     return (
       <Loading loading={loading} className="index">
-        <Title itemActive={this.itemActive} switchStock={this.switchStock.bind(this)} />
+        <Title itemActive={this.itemActive} stockList={stockList} switchStock={this.switchStock.bind(this)} />
         {showInfiniteScroll && <InfiniteScroller
           hasMore={hasMore}
-          loadMore={this.loadMore.bind(this)}
+          loadMore={this.loadMore.bind(this, this.itemActive)}
           loader={<div className="loader" style={{ textAlign: 'center', padding: '20px' }}>加载中...</div>}
         >
-          <Content dataArray={dataArray} stockPrice={stockPrice} />
+          <Content dataArray={dataArray} stockPrice={stockPrice} symbol={symbol} />
         </InfiniteScroller>}
         {isFinish && <div className="loader" style={{ textAlign: 'center', padding: '20px', color: 'gray' }}>到底啦</div>}
       </Loading>

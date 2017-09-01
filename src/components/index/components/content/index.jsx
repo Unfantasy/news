@@ -3,11 +3,14 @@
  */
 
 import React, { Component } from 'react';
-import { Flex } from 'antd-mobile';
-import { dateFormatter } from '../../../utils';
+import { Flex, Modal } from 'antd-mobile';
+// import { browserHistory } from 'react-router';
+import { dateFormatter } from '../../../../utils';
+import { NEWS_PATH } from '../../../../constants';
 import './style.scss';
 
 const Item = Flex.Item;
+const alert = Modal.alert;
 
 export default class extends Component {
   constructor() {
@@ -25,11 +28,20 @@ export default class extends Component {
   //   // console.log('props', props);
   //   this.setState({ dataArray });
   // }
+  toNewDetail(url) {
+    if (url) {
+      sessionStorage.setItem('newsUrl', url);
+      // browserHistory.push(NEWS_PATH.newsDetail);
+      location.href = NEWS_PATH.newsDetail;
+    } else {
+      alert('提示', '请下载APP查看详情');
+    }
+  }
   render() {
-    const { dataArray = [], stockPrice = {} } = this.props;
-    console.log('propsstockPrice: ', stockPrice);
+    const { dataArray = [], stockPrice = {}, symbol } = this.props;
+    // console.log('symbol: ', symbol);
     const newsList = dataArray.map((data, index) => {
-      if (index === 0) {
+      if (index === 0 && symbol === '1') {
         return null;
       }
       if (data.type.indexOf('news_') !== -1) {
@@ -38,7 +50,7 @@ export default class extends Component {
           // console.log('picArr: ', picArr);
           if (picArr.length === 1) {
             return (
-              <div className="news-type news-type-pic-1">
+              <div className="news-type news-type-pic-1" onClick={this.toNewDetail.bind(this, data.detail_url)}>
                 <div className="pic-1-1">
                   <h2>{data.description}</h2>
                   <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
@@ -50,7 +62,7 @@ export default class extends Component {
             );
           } else if (picArr.length === 3) {
             return (
-              <div className="news-type news-type-pic-3">
+              <div className="news-type news-type-pic-3" onClick={this.toNewDetail.bind(this, data.detail_url)}>
                 <h2>{data.description}</h2>
                 <Flex>
                   <Item><img src={picArr[0]} alt="img" /></Item>
@@ -62,7 +74,7 @@ export default class extends Component {
             );
           } else if (picArr.length === 0) {
             return (
-              <div className="news-type news-type-pic-0">
+              <div className="news-type news-type-pic-0" onClick={this.toNewDetail.bind(this, data.detail_url)}>
                 <h2>{data.description}</h2>
                 <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
               </div>
@@ -78,7 +90,7 @@ export default class extends Component {
           </div>
         );
         return (
-          <div className="news-type-memo">
+          <div className="news-type-memo" onClick={this.toNewDetail.bind(this, data.detail_url)}>
             <div className="title">{data.name}</div>
             <div className="content">{contentItem}</div>
             <div className="footer">{data.name}&nbsp;&nbsp;{dateFormatter(new Date(data.create_time), 'hh:mm')}</div>
@@ -88,7 +100,7 @@ export default class extends Component {
       return null;
     });
     let newsFirst = null;
-    if (dataArray[0]) {
+    if (dataArray[0] && symbol === '1') {
       newsFirst = (
         <div className="news-first">
           <div className="title">

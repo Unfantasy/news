@@ -7,7 +7,7 @@ const domain = 'http://test.mimikj.com:6060'; // 测试
 
 const NEWS_PATH = {
   index: '/web/index',
-  newsDetail: '/web/news-detail',
+  newsDetail: '/web/news/detail',
 };
 
 const NEWS_API = {

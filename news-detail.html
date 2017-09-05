@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+</head>
+<body>
+<div id="J_news_content"></div>
+<script>
+  var url = sessionStorage.getItem('newsUrl');
+  if (url) {
+    var postUrl = 'http://mimikj.com/mimikj' + url;
+    $.get(postUrl, function(data) {
+      if (data.success) {
+        var content = data.result.content;
+        document.getElementById('J_news_content').innerHTML = content;
+      }
+    });
+  }
+</script>
+</body>
+</html>

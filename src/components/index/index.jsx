@@ -4,12 +4,13 @@
 
 import React, { Component } from 'react';
 import { Modal } from 'antd-mobile';
+import { browserHistory } from 'react-router';
 import InfiniteScroller from 'react-infinite-scroller';
 import Title from './components/title';
 import Content from './components/content';
 import Loading from '../common/loading';
-import { fetch } from '../utils';
-import { NEWS_API } from '../../constants';
+import { fetch, getUrlParams } from '../../utils';
+import { NEWS_API, NEWS_PATH } from '../../constants';
 import './style.scss';
 
 // const TabPane = Tabs.TabPane;
@@ -30,9 +31,11 @@ export default class extends Component {
     this.itemActive = '1';
     this.fetchCount = 0;
     this.maxFetchCount = 3;
+    document.title = '今日自选';
   }
   componentDidMount() {
-    this.initData('1');
+    const symbol = getUrlParams().symbol || '1';
+    this.initData(symbol);
   }
 
   // 初始化数据
@@ -40,6 +43,7 @@ export default class extends Component {
     const checkComplete = () => {
       // console.log('this.fetchCount: ', this.fetchCount, 'this.maxFetchCount: ', this.maxFetchCount);
       if (this.fetchCount === this.maxFetchCount) {
+        this.itemActive = symbol;
         this.setState({ dataArray: this.dataArray, stockPrice: this.stockPrice, stockList: this.stockList, symbol, loading: false, hasMore: true });
       }
     };
@@ -89,6 +93,7 @@ export default class extends Component {
     const checkComplete = () => {
       // console.log('this.fetchCount: ', this.fetchCount, 'this.maxFetchCount: ', this.maxFetchCount);
       if (this.fetchCount === this.maxFetchCount) {
+        this.itemActive = symbol;
         this.setState({ dataArray: this.dataArray, stockPrice: this.stockPrice, symbol, loading: false, hasMore: true });
       }
     };
@@ -121,33 +126,34 @@ export default class extends Component {
     });
   }
   loadMore(symbol) {
-    if (!this.loadingMoreLock) {
-      this.loadingMoreLock = true;
-      fetch.get(NEWS_API.getList(symbol), { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', sort_num: this.pageNumber } }).then((data) => {
-        if (data.success === true) {
-          // 成功
-          const { result } = data;
-          if (result && typeof result === 'object' && result.length > 0) {
-            this.pageNumber = result[result.length - 1].sort_num;
-          }
-          let hasMore = true;
-          if (result.length === 0) hasMore = false;
-          const { dataArray } = this.state;
-          const newDataArray = dataArray.concat(result);
-          // console.log('newDataArray: ', newDataArray);
-          this.setState({ dataArray: newDataArray, hasMore, isFinish: !hasMore }, () => {
-            setTimeout(() => {
-              this.loadingMoreLock = false;
-            }, 100);
-          });
-        } else {
-          alert('提示', '网络走神了');
+    // if (!this.loadingMoreLock) {
+    this.loadingMoreLock = true;
+    fetch.get(NEWS_API.getList(symbol), { data: { auth_token: '918a258913fa4deeaf549bb571d34517857942061', sort_num: this.pageNumber } }).then((data) => {
+      if (data.success === true) {
+        // 成功
+        const { result } = data;
+        if (result && typeof result === 'object' && result.length > 0) {
+          this.pageNumber = result[result.length - 1].sort_num;
         }
-      });
-    }
+        let hasMore = true;
+        if (result.length === 0) hasMore = false;
+        const { dataArray } = this.state;
+        const newDataArray = dataArray.concat(result);
+        // console.log('newDataArray: ', newDataArray);
+        this.setState({ dataArray: newDataArray, hasMore, isFinish: !hasMore }, () => {
+          // setTimeout(() => {
+          //   this.loadingMoreLock = false;
+          // }, 100);
+        });
+      } else {
+        alert('提示', '网络走神了');
+      }
+    });
+    // }
   }
   switchStock(param) {
     // console.log('param: ', param);
+    document.documentElement.scrollTop = document.body.scrollTop = 0;
     this.dataNumber = null;
     this.itemActive = param;
     this.fetchCount = 0;
@@ -158,6 +164,7 @@ export default class extends Component {
       showInfiniteScroll: true,
     });
     this.loadData(param);
+    browserHistory.push(NEWS_PATH.index + '?symbol=' + param);
   }
   render() {
     const { dataArray, stockPrice, stockList, hasMore, symbol, loading, showInfiniteScroll, isFinish } = this.state;

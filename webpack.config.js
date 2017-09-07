@@ -97,6 +97,13 @@ module.exports = {
       name: 'shared',
       filename: 'shared.js'
     }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress:{
+        warnings: false,
+        drop_debugger: true,
+        drop_console: true
+      }
+    }),
     new ExtractTextPlugin('[name].css', { allChunks: true }),
     ...otherPlugins
   ]

@@ -27,7 +27,7 @@ export default class extends Component {
   }
   render() {
     const { itemActive, stockList = [], switchStock } = this.props;
-    // console.log('itemActive: ', itemActive);
+    console.log('itemActiveChild: ', itemActive);
     // const arr = ['', '', '', '', '', '', '', '', ''];
     const indexTitleItemNodes = stockList.map((stock) => {
       let classNameName = 'index-title-item';

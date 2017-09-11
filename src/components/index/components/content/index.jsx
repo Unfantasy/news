@@ -40,8 +40,8 @@ export default class extends Component {
   //   // console.log('props', props);
   //   this.setState({ dataArray });
   // }
-  toNewDetail(url) {
-    if (url) {
+  toNewDetail(url, type) {
+    if (url && (type.indexOf('news_') > -1)) {
       sessionStorage.setItem('newsUrl', url);
       // browserHistory.push(NEWS_PATH.newsDetail);
       location.href = NEWS_PATH.newsDetail;
@@ -51,7 +51,6 @@ export default class extends Component {
   }
   render() {
     const { dataArray = [], stockPrice = {}, symbol } = this.props;
-    // console.log('symbol: ', symbol);
     const newsList = dataArray.map((data, index) => {
       if (index === 0 && symbol === '1') {
         return null;
@@ -60,7 +59,7 @@ export default class extends Component {
       // 今日快讯
       if (data.type === 'zixuan_news_flash_jr') {
         return (
-          <div className="news-type today-news" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type today-news" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <div className="today-news-title">今日<span>快讯</span></div>
             <h2>{data.description}</h2>
             <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
@@ -70,7 +69,7 @@ export default class extends Component {
       // 资金流向
       } else if (data.type === 'trade_info_zjlx') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={ZJLXImgSrc} role="presentation" />
@@ -83,7 +82,7 @@ export default class extends Component {
       // 公司互动
       } else if (data.type === 'trade_info_gshd') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={GSHDImgSrc} role="presentation" />
@@ -96,7 +95,7 @@ export default class extends Component {
       // 公司公告
       } else if (data.type === 'notice') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={GSGGImgSrc} role="presentation" />
@@ -109,7 +108,7 @@ export default class extends Component {
       // 大宗交易
       } else if (data.type === 'trade_info_dzjy') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={DZJYImgSrc} role="presentation" />
@@ -122,7 +121,7 @@ export default class extends Component {
       // 龙虎榜
       } else if (data.type === 'trade_info_lhb') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={LHBImgSrc} role="presentation" />
@@ -140,7 +139,7 @@ export default class extends Component {
           description = JSON.parse(data.description);
         } catch (e) { console.log(e); }
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{description.desc || description}</h2>
             <p>
               <span>{data.name}&nbsp;&nbsp;</span>
@@ -154,7 +153,7 @@ export default class extends Component {
         console.log('priceData: ', data);
         // const descriptionObj = JSON.parse(data.description);
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <span>{data.name}&nbsp;&nbsp;</span>
@@ -209,7 +208,7 @@ export default class extends Component {
           return <div />;
         });
         return (
-          <div className="news-type indicator" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type indicator" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <div className="indicator-content">
               {itemNodes}
             </div>
@@ -224,7 +223,7 @@ export default class extends Component {
       // 董监高
       } else if (data.type === 'trade_info_djg') {
         return (
-          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-zjlx" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <h2>{data.description}</h2>
             <p>
               <img src={DJGImgSrc} role="presentation" />
@@ -236,7 +235,10 @@ export default class extends Component {
 
       // 交易提示
       } else if (data.type === 'memo') {
-        const description = typeof data.description === 'string' ? JSON.parse(data.description) : data.description;
+        let description = data.description;
+        try {
+          description = JSON.parse(data.description);
+        } catch (e) { console.log(e); }
         const contentItem = description.map(d =>
           <div className="stock">
             <div className="stock-name"><img src={IncreaseImgSrc} alt="交易提示图片" /><span>{d.stock_name}</span>&nbsp;&nbsp;<span>{d.symbol}</span></div>
@@ -244,7 +246,7 @@ export default class extends Component {
           </div>
         );
         return (
-          <div className="news-type-memo" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type-memo" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <div className="title">{data.name}</div>
             <div className="content">{contentItem}</div>
             <div className="footer">{data.name}&nbsp;&nbsp;{dateFormatter(new Date(data.create_time), 'hh:mm')}</div>
@@ -258,7 +260,7 @@ export default class extends Component {
           <List.Item extra={v.split(',')[1]}>{v.split(',')[0]}</List.Item>
         );
         return (
-          <div className="news-type trade-rzrq" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+          <div className="news-type trade-rzrq" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
             <div className="trade-rzrq-content">
               <div className="trade-rzrq-content-title">
                 <img src={RZRQImgSrc} role="presentation" />
@@ -280,7 +282,7 @@ export default class extends Component {
         } catch (e) { console.log(e); }
         if (picArr.length < 3 && picArr.length > 0) {
           return (
-            <div className="news-type news-type-pic-1" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+            <div className="news-type news-type-pic-1" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
               <div className="pic-1-1">
                 <h2>{data.description}</h2>
                 <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
@@ -292,7 +294,7 @@ export default class extends Component {
           );
         } else if (picArr.length === 3) {
           return (
-            <div className="news-type news-type-pic-3" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+            <div className="news-type news-type-pic-3" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
               <h2>{data.description}</h2>
               <Flex>
                 <Item><img src={picArr[0]} alt="img" /></Item>
@@ -304,7 +306,7 @@ export default class extends Component {
           );
         } else if (picArr.length === 0) {
           return (
-            <div className="news-type news-type-pic-0" onClick={this.toNewDetail.bind(this, data.detail_url)}>
+            <div className="news-type news-type-pic-0" onClick={this.toNewDetail.bind(this, data.detail_url, data.type)}>
               <h2>{data.description}</h2>
               <p><span>{data.name}&nbsp;&nbsp;</span>{dateFormatter(new Date(data.create_time), 'hh:mm')}</p>
             </div>

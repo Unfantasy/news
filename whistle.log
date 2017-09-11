@@ -1,0 +1,14 @@
+
+From: whistle
+Date: 2017-09-08 16:33:51
+Error: listen EADDRINUSE :::233
+    at Object.exports._errnoException (util.js:1022:11)
+    at exports._exceptionWithHostPort (util.js:1045:20)
+    at Server._listen2 (net.js:1259:14)
+    at listen (net.js:1295:10)
+    at Server.listen (net.js:1391:5)
+    at EventEmitter.app.listen (C:\Users\wb-jx257126\AppData\Roaming\npm\node_modules\whistle\node_modules\.4.12.3@express\lib\application.js:595:24)
+    at proxy (C:\Users\wb-jx257126\AppData\Roaming\npm\node_modules\whistle\lib\index.js:269:20)
+    at init (C:\Users\wb-jx257126\AppData\Roaming\npm\node_modules\whistle\index.js:65:26)
+    at Command.<anonymous> (C:\Users\wb-jx257126\AppData\Roaming\npm\node_modules\whistle\node_modules\.2.2.1@starting\lib\bootstrap.js:10:5)
+    at Command.listener (C:\Users\wb-jx257126\AppData\Roaming\npm\node_modules\whistle\node_modules\.2.7.1@commander\index.js:289:8)

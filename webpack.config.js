@@ -23,7 +23,7 @@ module.exports = {
     historyApiFallback: true
   },
 
-  entry: { fetch: 'whatwg-fetch', "index": path.resolve(__dirname, 'src/entries/index') },
+  entry: { "index": path.resolve(__dirname, 'src/entries/index') },
 
   output: {
     filename: '[name].js',
@@ -97,6 +97,8 @@ module.exports = {
       name: 'shared',
       filename: 'shared.js'
     }),
+
+    // 编译去console.log 
     new webpack.optimize.UglifyJsPlugin({
       compress:{
         warnings: false,

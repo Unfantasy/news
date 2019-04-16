@@ -1,2 +1,1 @@
-# antd-mobile
-react + antd-mobie + webpack 脚手架
+# 今日精选前端页面
